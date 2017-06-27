@@ -1,8 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -15,7 +11,7 @@ public class CardProblems {
         Set<String> ranks = set("A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K");
         Set<String> deck = cross(suits, ranks);
         System.out.println("Es gibt " + deck.size() + " Karten im Deck.");
-        Set<String> possibleHands = possibleHands(deck, 4);
+        Set<String> possibleHands = possibleHands(deck, 3);
         System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn drei Karten gezogen werden.");
 
         Set<String> sameSuitHands = filterCards(possibleHands, sameSuit());
