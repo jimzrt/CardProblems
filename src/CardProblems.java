@@ -10,14 +10,39 @@ public class CardProblems {
         Set<String> suits = set("s", "h", "d", "c");
         Set<String> ranks = set("A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K");
         Set<String> deck = cross(suits, ranks);
-        System.out.println("Es gibt " + deck.size() + " Karten im Deck.");
+        System.out.println("Es sind " + deck.size() + " Karten im Deck.");
         Set<String> possibleHands = possibleHands(deck, 3);
         System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn drei Karten gezogen werden.");
 
+        System.out.println("\nAnna zieht drei Karten.");
         Set<String> sameSuitHands = filterCards(possibleHands, sameSuit());
         System.out.println("Die Wahrscheinlichkeit, dass Anna drei Karten mit der selben Farbe gezogen hat, beträtgt " + getProbability(sameSuitHands, possibleHands) + "%.");
         Set<String> sameRankHands = filterCards(possibleHands, sameRank());
+        System.out.println("Möglichkeit A: Anna legt die drei Karten zurück und Ben zieht drei Karten.");
         System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträtgt " + getProbability(sameRankHands, possibleHands) + "%.");
+
+        System.out.println("\nMöglichkeit B: Anna legt die drei Karten nicht zurück und Ben zieht drei Karten.");
+
+        double sumOfProbability = 0.0;
+        Set<String> tempDeck;
+        Set<String> tempPossibleHands;
+        int counter = 0;
+        for (String cards : possibleHands) {
+            tempDeck = removeCardsFromDeck(cards, deck);
+            tempPossibleHands = possibleHands(tempDeck, 3);
+            sameRankHands = filterCards(tempPossibleHands, sameRank());
+            sumOfProbability += getProbability(sameRankHands, tempPossibleHands);
+            System.out.println(++counter);
+        }
+        System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträgt " + sumOfProbability / possibleHands.size() + "%");
+    }
+
+    private static Set<String> removeCardsFromDeck(String cards, Set<String> deck) {
+        Set<String> tempDeck = new HashSet<>(deck);
+        for (String card : getCards(cards)) {
+            tempDeck.remove(card);
+        }
+        return tempDeck;
     }
 
     public static Set<String> set(String... items) {
