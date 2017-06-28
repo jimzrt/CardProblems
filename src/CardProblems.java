@@ -12,16 +12,21 @@ public class CardProblems {
         Set<String> deck = cross(suits, ranks);
         System.out.println("Es sind " + deck.size() + " Karten im Deck.");
         Set<String> possibleHands = possibleHands(deck, 3);
-        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn drei Karten gezogen werden.");
 
+        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn drei Karten gezogen werden.");
+        System.out.println(possibleHandsCount(deck,3,null));
         System.out.println("\nAnna zieht drei Karten.");
         Set<String> sameSuitHands = filterCards(possibleHands, sameSuit());
+        System.out.println(sameSuitHands.size());
         System.out.println("Die Wahrscheinlichkeit, dass Anna drei Karten mit der selben Farbe gezogen hat, beträtgt " + getProbability(sameSuitHands, possibleHands) + "%.");
         Set<String> sameRankHands = filterCards(possibleHands, sameRank());
         System.out.println("Möglichkeit A: Anna legt die drei Karten zurück und Ben zieht drei Karten.");
         System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträtgt " + getProbability(sameRankHands, possibleHands) + "%.");
 
         System.out.println("\nMöglichkeit B: Anna legt die drei Karten nicht zurück und Ben zieht drei Karten.");
+
+        System.out.println(sameSuit().test("sAh2"));
+        System.out.println(sameSuit().test("sAs3"));
 
         double sumOfProbability = 0.0;
         Set<String> tempDeck;
@@ -32,7 +37,7 @@ public class CardProblems {
             tempPossibleHands = possibleHands(tempDeck, 3);
             sameRankHands = filterCards(tempPossibleHands, sameRank());
             sumOfProbability += getProbability(sameRankHands, tempPossibleHands);
-            System.out.println(++counter);
+        //    System.out.println(++counter);
         }
         System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträgt " + sumOfProbability / possibleHands.size() + "%");
     }
@@ -83,6 +88,22 @@ public class CardProblems {
         }
 
         return hand;
+    }
+
+    private static int possibleHandsCount(Set<String> deck, int cardCount, Predicate<String> predicate){
+        int count = deck.size();
+        for (int i = 1; i < cardCount; i++) {
+            count += (deck.size() * (count-(i+1)));
+        }
+        return count;
+    }
+
+    private static int crossNoRepetitionCount(int count, Set<String> deck, Predicate<String> predicate) {
+
+            count += (deck.size() * count);
+
+
+        return count;
     }
 
 
