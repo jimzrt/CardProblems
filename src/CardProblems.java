@@ -2,6 +2,17 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/*
+Schreiben Sie einen Java-Code, der folgende Problemstellung behandelt: Anna und Ben ziehen von einem gemischten
+Deck (2 bis Ass) jeweils drei Karten. Mit welcher Wahrscheinlichkeit hat Anna drei Karten mit gleicher Farbe? Mit
+welcher Wahrscheinlichkeit hat Ben drei Karten mit gleichem Wert?
+
+Würde sich sehr viel schneller über den Binomialkoeffizient berechnen, ist hier aber wegen der Code-Vorgabe eher
+mit brute force gelöst.
+Abhängig von der Anzahl der gezogenen Karten wird eine Menge mit allen Möglichkeiten generiert und mittels Prädikate
+gefiltert.
+Das Verhältnis der Anzahl der gefilterten Menge und der gesamten Menge gibt die Wahrscheinlickeit an.
+*/
 
 public class CardProblems {
 
@@ -36,8 +47,7 @@ public class CardProblems {
         double probabilityOneLessSameRank = getProbability(sameRankHands.size() - 1, possibleHands.size() - 1);
         double probabilityOneLessNotSameRank = getProbability(sameRankHands.size(), possibleHands.size() - 1);
         for (String cards : possibleHands) {
-            sumOfProbability += sameRankHands.contains(cards) ? probabilityOneLessSameRank :
-                    probabilityOneLessNotSameRank;
+            sumOfProbability += sameRankHands.contains(cards) ? probabilityOneLessSameRank : probabilityOneLessNotSameRank;
         }
 
         System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträtgt "
@@ -68,6 +78,7 @@ public class CardProblems {
         return new HashSet<>(Arrays.asList(items));
     }
 
+    //vereinfachte Version der Vorgabe - ohne (impliziten) Iterator
     private static Set<String> cross(Set<String> a, Set<String> b) {
         Set<String> cross = new HashSet<>();
 
@@ -93,6 +104,7 @@ public class CardProblems {
         return cross;
     }
 
+    //vereinfachte Version der Funktion hands aus der Vorgabe - verallgemeinert für variable Anzahl gezogener Karten
     private static Set<String> possibleHands(Set<String> deck, int cardCount) {
         Set<String> hands = new HashSet<>(deck);
 
@@ -134,7 +146,6 @@ public class CardProblems {
                     return false;
             }
             return true;
-
         };
     }
 
@@ -147,7 +158,6 @@ public class CardProblems {
                     return false;
             }
             return true;
-
         };
     }
 
