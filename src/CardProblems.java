@@ -24,8 +24,8 @@ public class CardProblems {
 
         int cardCount = 3;
         Set<String> possibleHands = possibleHands(deck, cardCount);
-        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten auf der Hand, wenn " + cardCount
-                + " Karten gezogen werden.");
+        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten auf der Hand, wenn " + cardCount +
+                " Karten gezogen werden.");
 
         System.out.println("\nMöglichkeit A: Anna (oder Ben) zieht " + cardCount + " Karten und legt sie wieder zurück. Anschließend" +
                 " zieht die andere Person.");
@@ -35,8 +35,10 @@ public class CardProblems {
 
         System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträtgt "
                 + String.format("%.3f", sameSuitProbability) + "%.");
+
         Set<String> sameRankHands = filterCards(possibleHands, sameRank());
         double sameRankProbability = getProbability(sameRankHands.size(), possibleHands.size());
+
         System.out.println("Die Wahrscheinlichkeit, dass Ben " + cardCount + " Karten mit dem selben Wert gezogen hat, beträtgt " +
                 String.format("%.3f", sameRankProbability) + "%.");
 
@@ -78,7 +80,7 @@ public class CardProblems {
         return new HashSet<>(Arrays.asList(items));
     }
 
-    //vereinfachte Version der Vorgabe - ohne (impliziten) Iterator
+    //vereinfachte Version der Vorgabe - ohne (expliziten) Iterator
     private static Set<String> cross(Set<String> a, Set<String> b) {
         Set<String> cross = new HashSet<>();
 
