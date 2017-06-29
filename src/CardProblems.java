@@ -11,39 +11,47 @@ public class CardProblems {
         Set<String> ranks = set("A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K");
         Set<String> deck = cross(suits, ranks);
         System.out.println("Es sind " + deck.size() + " Karten im Deck.");
-        Set<String> possibleHands = possibleHands(deck, 3);
-        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn drei Karten gezogen werden.");
 
-        System.out.println("\nAnna zieht drei Karten.");
+        int cardCount = 4;
+        Set<String> possibleHands = possibleHands(deck, cardCount);
+        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn " + cardCount + " Karten gezogen werden.");
+
+
+        System.out.println("\nMöglichkeit A: Anna (oder Ben) zieht " + cardCount + " Karten und legt sie wieder zurück.");
         Set<String> sameSuitHands = filterCards(possibleHands, sameSuit());
-        System.out.println("Die Wahrscheinlichkeit, dass Anna drei Karten mit der selben Farbe gezogen hat, beträtgt " + getProbability(sameSuitHands, possibleHands) + "%.");
+        double sameSuitProbability = getProbability(sameSuitHands.size(), possibleHands.size());
+        System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträtgt " + String.format("%.3f", sameSuitProbability) + "%.");
         Set<String> sameRankHands = filterCards(possibleHands, sameRank());
-        System.out.println("Möglichkeit A: Anna legt die drei Karten zurück und Ben zieht drei Karten.");
-        System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträtgt " + getProbability(sameRankHands, possibleHands) + "%.");
+        double sameRankProbability = getProbability(sameRankHands.size(), possibleHands.size());
+        System.out.println("Die Wahrscheinlichkeit, dass Ben " + cardCount + " Karten mit dem selben Wert gezogen hat, beträtgt " + String.format("%.3f", sameRankProbability) + "%.");
 
-        System.out.println("\nMöglichkeit B: Anna legt die drei Karten nicht zurück und Ben zieht drei Karten.");
-
+        System.out.println("\nMöglichkeit B: Anna zieht " + cardCount + " Karten und legt sie nicht wieder zurück. Anschließend zieht Ben.");
         double sumOfProbability = 0.0;
-        Set<String> tempDeck;
-        Set<String> tempPossibleHands;
-        int counter = 0;
+        double probabilityOneLessSameRank = getProbability(sameRankHands.size() - 1, possibleHands.size() - 1);
+        double probabilityOneLessNotSameRank = getProbability(sameRankHands.size(), possibleHands.size() - 1);
+
         for (String cards : possibleHands) {
-            tempDeck = removeCardsFromDeck(cards, deck);
-            tempPossibleHands = possibleHands(tempDeck, 3);
-            sameRankHands = filterCards(tempPossibleHands, sameRank());
-            sumOfProbability += getProbability(sameRankHands, tempPossibleHands);
-            System.out.println(++counter);
+            sumOfProbability += sameRankHands.contains(cards) ? probabilityOneLessSameRank : probabilityOneLessNotSameRank;
         }
-        System.out.println("Die Wahrscheinlichkeit, dass Ben drei Karten mit dem selben Wert gezogen hat, beträgt " + sumOfProbability / possibleHands.size() + "%");
+        System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträtgt " + String.format("%.3f", sameSuitProbability) + "%.");
+        System.out.println("Die Wahrscheinlichkeit, dass Ben " + cardCount + " Karten mit dem selben Wert gezogen hat, beträgt " + String.format("%.3f", sumOfProbability / possibleHands.size()) + "%");
+
+
+        System.out.println("\nMöglichkeit C: Ben zieht " + cardCount + " Karten und legt sie nicht wieder zurück. Anschließend zieht Anna.");
+        sumOfProbability = 0.0;
+        double probabilityOneLessSameSuit = getProbability(sameSuitHands.size() - 1, possibleHands.size() - 1);
+        double probabilityOneLessNotSameSuit = getProbability(sameSuitHands.size(), possibleHands.size() - 1);
+
+        for (String cards : possibleHands) {
+            sumOfProbability += sameSuitHands.contains(cards) ? probabilityOneLessSameSuit : probabilityOneLessNotSameSuit;
+        }
+        System.out.println("Die Wahrscheinlichkeit, dass Ben " + cardCount + " Karten mit dem selben Wert gezogen hat, beträtgt " + String.format("%.3f", sameRankProbability) + "%.");
+        System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträgt " + String.format("%.3f", sumOfProbability / possibleHands.size()) + "%");
+
+
+        System.out.println("\n==> Es macht in diesem Fall keinen Unterschied, ob die Karten zurückgelegt werden oder wer anfängt.");
     }
 
-    private static Set<String> removeCardsFromDeck(String cards, Set<String> deck) {
-        Set<String> tempDeck = new HashSet<>(deck);
-        for (String card : getCards(cards)) {
-            tempDeck.remove(card);
-        }
-        return tempDeck;
-    }
 
     public static Set<String> set(String... items) {
         return new HashSet<>(Arrays.asList(items));
@@ -67,7 +75,7 @@ public class CardProblems {
 
         for (String handCard : hand) {
             for (String deckCard : deck) {
-                if (!getCards(handCard).contains(deckCard))
+                if (!handCard.contains(deckCard))
                     cross.add(handCard + deckCard);
             }
         }
@@ -76,13 +84,13 @@ public class CardProblems {
     }
 
     private static Set<String> possibleHands(Set<String> deck, int cardCount) {
-        Set<String> hand = new HashSet<>(deck);
+        Set<String> hands = new HashSet<>(deck);
 
         for (int i = 1; i < cardCount; i++) {
-            hand = crossNoRepetition(hand, deck);
+            hands = crossNoRepetition(hands, deck);
         }
 
-        return hand;
+        return hands;
     }
 
 
@@ -137,8 +145,8 @@ public class CardProblems {
     }
 
 
-    private static double getProbability(Set<String> eventSpace, Set<String> sampleSpace) {
-        return ((double) eventSpace.size() / sampleSpace.size()) * 100;
+    private static double getProbability(int eventSpace, int sampleSpace) {
+        return ((double) eventSpace / sampleSpace) * 100;
     }
 
 
