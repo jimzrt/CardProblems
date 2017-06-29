@@ -12,11 +12,11 @@ public class CardProblems {
         Set<String> deck = cross(suits, ranks);
         System.out.println("Es sind " + deck.size() + " Karten im Deck.");
 
-        int cardCount = 4;
+        int cardCount = 3;
         Set<String> possibleHands = possibleHands(deck, cardCount);
-        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten, wenn " + cardCount + " Karten gezogen werden.");
+        System.out.println("Es gibt " + possibleHands.size() + " mögliche Kombinationen von Karten auf der Hand, wenn " + cardCount + " Karten gezogen werden.");
 
-        System.out.println("\nMöglichkeit A: Anna (oder Ben) zieht " + cardCount + " Karten und legt sie wieder zurück.");
+        System.out.println("\nMöglichkeit A: Anna (oder Ben) zieht " + cardCount + " Karten und legt sie wieder zurück. Anschließend zieht die andere Person.");
         Set<String> sameSuitHands = filterCards(possibleHands, sameSuit());
         double sameSuitProbability = getProbability(sameSuitHands.size(), possibleHands.size());
         System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträtgt " + String.format("%.3f", sameSuitProbability) + "%.");
@@ -46,15 +46,15 @@ public class CardProblems {
         System.out.println("Die Wahrscheinlichkeit, dass Ben " + cardCount + " Karten mit dem selben Wert gezogen hat, beträtgt " + String.format("%.3f", sameRankProbability) + "%.");
         System.out.println("Die Wahrscheinlichkeit, dass Anna " + cardCount + " Karten mit der selben Farbe gezogen hat, beträgt " + String.format("%.3f", sumOfProbability / possibleHands.size()) + "%");
 
-        System.out.println("\n==> Es macht in diesem Fall keinen Unterschied, ob die Karten zurückgelegt werden oder wer anfängt.");
+        System.out.println("\n==> Es macht keinen Unterschied, ob die Karten zurückgelegt werden oder wer anfängt.");
     }
 
 
-    public static Set<String> set(String... items) {
+    private static Set<String> set(String... items) {
         return new HashSet<>(Arrays.asList(items));
     }
 
-    public static Set<String> cross(Set<String> a, Set<String> b) {
+    private static Set<String> cross(Set<String> a, Set<String> b) {
         Set<String> cross = new HashSet<>();
 
         for (String aItem : a) {
@@ -66,8 +66,7 @@ public class CardProblems {
         return cross;
     }
 
-
-    private static Set<String> crossNoRepetition(Set<String> hand, Set<String> deck) {
+    private static Set<String> crossNoDuplicates(Set<String> hand, Set<String> deck) {
         Set<String> cross = new HashSet<>();
 
         for (String handCard : hand) {
@@ -84,12 +83,11 @@ public class CardProblems {
         Set<String> hands = new HashSet<>(deck);
 
         for (int i = 1; i < cardCount; i++) {
-            hands = crossNoRepetition(hands, deck);
+            hands = crossNoDuplicates(hands, deck);
         }
 
         return hands;
     }
-
 
     private static List<String> getCards(String handCard) {
         List<String> cards = new ArrayList<>();
@@ -101,21 +99,19 @@ public class CardProblems {
         return cards;
     }
 
-    private static String getSuit(String p) {
-        return p.substring(0, 1);
+    private static String getSuit(String card) {
+        return card.substring(0, 1);
     }
 
-    private static String getRank(String p) {
-        return p.substring(1, 2);
+    private static String getRank(String card) {
+        return card.substring(1, 2);
     }
 
-
-    public static Set<String> filterCards(Set<String> cards, Predicate<String> predicate) {
+    private static Set<String> filterCards(Set<String> cards, Predicate<String> predicate) {
         return cards.stream().filter(predicate).collect(Collectors.toSet());
     }
 
-
-    public static Predicate<String> sameSuit() {
+    private static Predicate<String> sameSuit() {
         return (String cards) -> {
 
             String suit = getSuit(cards);
@@ -128,7 +124,7 @@ public class CardProblems {
         };
     }
 
-    public static Predicate<String> sameRank() {
+    private static Predicate<String> sameRank() {
         return (String cards) -> {
 
             String rank = getRank(cards);
@@ -141,10 +137,8 @@ public class CardProblems {
         };
     }
 
-
     private static double getProbability(int eventSpace, int sampleSpace) {
         return ((double) eventSpace / sampleSpace) * 100;
     }
-
 
 }
